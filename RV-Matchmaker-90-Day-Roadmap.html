@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RV Matchmaker 90-Day Roadmap</title>
+<style>
+  :root{
+    --forest:#1f4d3d;
+    --forest-dark:#14332a;
+    --amber:#d97b29;
+    --amber-dark:#b8631c;
+    --bg:#f5f3ee;
+    --card:#ffffff;
+    --ink:#22302b;
+    --muted:#6b7770;
+    --line:#e3e0d6;
+    --good:#2f8f4e;
+    --warn:#c94f2f;
+    --pending:#c9a227;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);}
+  header{background:linear-gradient(135deg,var(--forest) 0%,var(--forest-dark) 100%);color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+  header h1{margin:0;font-size:1.35rem;font-weight:700;letter-spacing:.2px;}
+  header .sub{font-size:.8rem;color:#cfe3d8;margin-top:2px;}
+  header nav{display:flex;gap:8px;}
+  header nav button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.85rem;font-weight:600;}
+  header nav button:hover{background:rgba(255,255,255,.22);}
+  header nav button.active{background:var(--amber);border-color:var(--amber);}
+  main{max-width:1100px;margin:0 auto;padding:22px 20px 80px;}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px;}
+  .btn{background:var(--forest);color:#fff;border:none;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:.85rem;font-weight:600;}
+  .btn:hover{background:var(--forest-dark);}
+  .btn.amber{background:var(--amber);}
+  .btn.amber:hover{background:var(--amber-dark);}
+  .btn.ghost{background:transparent;color:var(--forest);border:1px solid var(--forest);}
+  .btn.ghost:hover{background:#eaf1ec;}
+  .btn.danger{background:transparent;color:var(--warn);border:1px solid var(--warn);}
+  .btn.small{padding:5px 10px;font-size:.75rem;}
+  input[type=file]{display:none;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  table{width:100%;border-collapse:collapse;}
+  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);font-size:.88rem;}
+  th{color:var(--muted);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;}
+  tr.trainee-row{cursor:pointer;}
+  tr.trainee-row:hover{background:#f7f5ee;}
+  .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.72rem;font-weight:700;letter-spacing:.02em;}
+  .badge.good{background:#e5f4ea;color:var(--good);}
+  .badge.warn{background:#fbe9e4;color:var(--warn);}
+  .badge.pending{background:#faf3d9;color:#8a6d0c;}
+  .progress-outer{background:#ece8dc;border-radius:999px;height:10px;overflow:hidden;flex:1;min-width:80px;}
+  .progress-inner{background:linear-gradient(90deg,var(--amber),var(--forest));height:100%;}
+  .empty{color:var(--muted);font-size:.9rem;padding:20px 0;text-align:center;}
+  .modal-bg{position:fixed;inset:0;background:rgba(20,30,25,.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px;}
+  .modal{background:#fff;border-radius:14px;padding:24px;max-width:440px;width:100%;}
+  .modal h3{margin-top:0;}
+  .field{margin-bottom:12px;}
+  .field label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);margin-bottom:4px;}
+  .field input,.field select,.field textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;font-size:.9rem;font-family:inherit;}
+  .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;}
+
+  /* Trainee detail */
+  .detail-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;}
+  .detail-header h2{margin:0 0 4px;font-size:1.3rem;}
+  .meta-line{color:var(--muted);font-size:.85rem;}
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:16px;}
+  .stat{background:#f7f5ee;border-radius:10px;padding:12px 14px;}
+  .stat .num{font-size:1.5rem;font-weight:800;color:var(--forest);}
+  .stat .lbl{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;}
+  .floor-ready-banner{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:10px;}
+  .floor-ready-banner.good{background:#e5f4ea;color:var(--good);}
+  .floor-ready-banner.warn{background:#fbe9e4;color:var(--warn);}
+  .floor-ready-banner.pending{background:#faf3d9;color:#8a6d0c;}
+
+  .filters{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0;}
+  .chip{padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:.75rem;cursor:pointer;color:var(--ink);}
+  .chip.active{background:var(--forest);color:#fff;border-color:var(--forest);}
+
+  .phase{margin-bottom:18px;}
+  .phase-head{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:12px 16px;background:#eef1ea;border-radius:10px;}
+  .phase-head:hover{background:#e6ebe1;}
+  .phase-head h3{margin:0;font-size:1rem;}
+  .phase-head .days{font-size:.75rem;color:var(--muted);font-weight:600;}
+  .phase-goal{font-size:.8rem;color:var(--muted);margin:6px 2px 0;}
+  .phase-progress{display:flex;align-items:center;gap:8px;font-size:.75rem;color:var(--muted);min-width:120px;}
+  .items{padding:6px 4px 4px;}
+  .item{display:flex;gap:12px;padding:12px 8px;border-bottom:1px solid var(--line);align-items:flex-start;}
+  .item:last-child{border-bottom:none;}
+  .item input[type=checkbox]{margin-top:3px;width:18px;height:18px;accent-color:var(--forest);cursor:pointer;flex-shrink:0;}
+  .item-body{flex:1;min-width:0;}
+  .item-title{font-size:.92rem;font-weight:600;}
+  .item.done .item-title{color:var(--muted);text-decoration:line-through;text-decoration-color:#b7c2ba;}
+  .item-tag{display:inline-block;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--forest);background:#e5f0e8;padding:2px 8px;border-radius:6px;margin-bottom:5px;}
+  .item-detail{font-size:.82rem;color:var(--muted);margin-top:3px;}
+  .item-signoff{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+  .item-signoff select,.item-signoff input{font-size:.78rem;padding:5px 8px;border:1px solid var(--line);border-radius:6px;font-family:inherit;}
+  .item-signoff input[type=text]{flex:1;min-width:140px;}
+  .item-signoff input[type=date]{width:140px;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--muted);font-size:.75rem;padding:20px;}
+  /* Product Reference view */
+  .model-card{margin-bottom:16px;}
+  .model-card-head{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;}
+  .model-card-head h3{margin:0 0 3px;font-size:1.05rem;}
+  .model-tier{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fff;padding:3px 10px;border-radius:999px;background:var(--forest);}
+  .model-facts{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0 6px;font-size:.82rem;color:var(--muted);}
+  .model-facts b{color:var(--ink);}
+  .best-for{font-size:.85rem;font-style:italic;color:var(--forest-dark);margin:8px 0 12px;padding:8px 12px;background:#f7f5ee;border-left:3px solid var(--amber);border-radius:4px;}
+  .feat-row{display:flex;gap:14px;padding:8px 0;border-bottom:1px solid var(--line);}
+  .feat-row:last-child{border-bottom:none;}
+  .feat-name{flex:0 0 220px;font-weight:600;font-size:.85rem;}
+  .feat-benefit{flex:1;font-size:.85rem;color:var(--muted);}
+  .quiz-item{padding:10px 0;border-bottom:1px solid var(--line);}
+  .quiz-item:last-child{border-bottom:none;}
+  .quiz-q{font-size:.88rem;font-weight:600;display:flex;gap:8px;align-items:baseline;}
+  .quiz-tag{font-size:.65rem;font-weight:700;text-transform:uppercase;color:var(--forest);background:#e5f0e8;padding:2px 7px;border-radius:6px;flex-shrink:0;}
+  .quiz-a{font-size:.85rem;color:var(--muted);margin-top:5px;padding-left:2px;display:none;}
+  .quiz-a.show{display:block;}
+  .quiz-a-toggle{background:none;border:none;color:var(--forest);font-size:.75rem;font-weight:600;cursor:pointer;padding:0;margin-top:4px;text-decoration:underline;}
+
+  /* Certification */
+  .cert-brand-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);gap:12px;flex-wrap:wrap;}
+  .cert-brand-row:last-child{border-bottom:none;}
+  .cert-brand-name{font-weight:600;font-size:.9rem;}
+  .cert-brand-meta{font-size:.78rem;color:var(--muted);}
+  .quiz-progress-text{font-size:.78rem;color:var(--muted);margin-bottom:6px;}
+  .quiz-modal-q{font-size:1.02rem;font-weight:600;margin:10px 0;}
+  .quiz-modal-answer{background:#f7f5ee;border-radius:8px;padding:10px 12px;font-size:.88rem;color:var(--ink);margin:10px 0;border-left:3px solid var(--amber);}
+  .quiz-result-score{font-size:2.4rem;font-weight:800;color:var(--forest);text-align:center;margin:14px 0 4px;}
+  .quiz-result-sub{text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:16px;}
+  .cert-pill{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:999px;margin-right:4px;display:inline-block;}
+  @media print{
+    header nav, .toolbar, .item-signoff, .filters{display:none !important;}
+    body{background:#fff;}
+    .card{box-shadow:none;border:1px solid #ccc;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🚐 RV Matchmaker 90-Day Roadmap</h1>
+    <div class="sub">Based on the Campers Inn RV Sales Handbook — floor-ready by Day 30</div>
+  </div>
+  <nav>
+    <button id="navRoster" class="active">Team Roster</button>
+    <button id="navDetail" class="hidden">Trainee Checklist</button>
+    <button id="navProduct">Product Reference</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ROSTER VIEW -->
+  <section id="rosterView">
+    <div class="toolbar">
+      <button class="btn amber" id="addTraineeBtn">+ Add New Trainee</button>
+      <button class="btn ghost" id="exportBtn">Export Data (.json)</button>
+      <button class="btn ghost" id="importBtn">Import Data (.json)</button>
+      <input type="file" id="importFile" accept="application/json">
+    </div>
+
+    <div class="card">
+      <table id="rosterTable">
+        <thead>
+          <tr>
+            <th>RV Matchmaker</th>
+            <th>Store</th>
+            <th>Start Date</th>
+            <th>Day</th>
+            <th>Progress</th>
+            <th>Status</th>
+            <th>Product Cert</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="rosterBody"></tbody>
+      </table>
+      <div id="rosterEmpty" class="empty hidden">No trainees yet. Click "+ Add New Trainee" to start tracking someone's first 90 days.</div>
+    </div>
+  </section>
+
+  <!-- DETAIL VIEW -->
+  <section id="detailView" class="hidden">
+    <div class="toolbar">
+      <button class="btn ghost" id="backBtn">← Back to Roster</button>
+      <button class="btn ghost" id="printBtn">Print / Save PDF</button>
+      <button class="btn danger" id="deleteTraineeBtn">Delete Trainee</button>
+    </div>
+
+    <div class="card">
+      <div class="detail-header">
+        <div>
+          <h2 id="dName"></h2>
+          <div class="meta-line" id="dMeta"></div>
+        </div>
+        <div class="field" style="min-width:220px;margin-bottom:0;">
+          <label>Track</label>
+          <select id="dTrack">
+            <option value="new">New to Sales — standard 90-day</option>
+            <option value="experienced">Experienced RV Salesperson — fast-track (~45 days)</option>
+          </select>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat"><div class="num" id="statDay">–</div><div class="lbl">Day of Program</div></div>
+        <div class="stat"><div class="num" id="statPct">0%</div><div class="lbl">Overall Complete</div></div>
+        <div class="stat"><div class="num" id="statDone">0/0</div><div class="lbl">Tasks Complete</div></div>
+        <div class="stat"><div class="num" id="statPhase">–</div><div class="lbl">Current Phase</div></div>
+      </div>
+      <div id="floorReadyBanner" class="floor-ready-banner pending"></div>
+    </div>
+
+    <div class="card" id="certCard">
+      <div class="detail-header" style="margin-bottom:2px;">
+        <h2 style="margin:0;">🎓 Product Certification</h2>
+      </div>
+      <div class="meta-line" style="margin-bottom:10px;">Scored quiz, 80%+ to certify. This is self-graded by the trainee — your GM should still spot-check knowledge before signing off the Phase 4 written test.</div>
+      <div id="certBrandList"></div>
+    </div>
+
+    <div class="filters" id="filterChips"></div>
+
+    <div id="phaseList"></div>
+  </section>
+
+  <!-- PRODUCT REFERENCE VIEW -->
+  <section id="productView" class="hidden">
+    <div class="card">
+      <h2 style="margin-top:0;">Lineup — Quick Compare</h2>
+      <div class="meta-line" style="margin-bottom:10px;">Pulled from current manufacturer sales/feature sheets. Confirm pricing and specs with your GM before quoting a customer — sheets change without notice, and some brands don't publish price/weight/length/sleeps by line (check the window sticker on the actual unit).</div>
+      <div class="filters" id="brandChips"></div>
+      <div style="overflow-x:auto;">
+        <table id="compareTable">
+          <thead>
+            <tr><th>Model</th><th>Brand</th><th>Type</th><th>Starting At</th><th>Weight</th><th>Length</th><th>Sleeps</th></tr>
+          </thead>
+          <tbody id="compareBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="brandFeatureCards"></div>
+
+    <div id="modelCards"></div>
+
+    <div class="card" id="quizCard">
+      <div class="detail-header" style="margin-bottom:6px;">
+        <h2 style="margin:0;">Product Knowledge Quiz Bank</h2>
+        <button class="btn ghost small" id="quizToggleBtn">Show All Answers</button>
+      </div>
+      <div class="meta-line" style="margin-bottom:10px;">Study bank for the Phase 4 written product knowledge test (Handbook Ch.3: "create a written test with 25 questions on your product"). To take the scored, certifying version, open a trainee's Checklist page and use the 🎓 Product Certification card.</div>
+      <div id="quizList"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Internal training tool — Campers Inn RV Sales Handbook (Oct 2024). Data is stored locally in this browser; use Export to back up or share progress with other managers.</footer>
+
+<!-- Add trainee modal -->
+<div class="modal-bg hidden" id="addModal">
+  <div class="modal">
+    <h3>Add New Trainee</h3>
+    <div class="field"><label>Full Name</label><input type="text" id="fName" placeholder="e.g. Jordan Rivera"></div>
+    <div class="field">
+      <label>Track</label>
+      <select id="fTrack">
+        <option value="new">New to Sales — standard 90-day track</option>
+        <option value="experienced">Experienced RV Salesperson — fast-track (~45 days)</option>
+      </select>
+    </div>
+    <div class="field"><label>Start Date</label><input type="date" id="fStart"></div>
+    <div class="field"><label>Store / Location</label><input type="text" id="fStore" placeholder="e.g. Kingston, NH"></div>
+    <div class="field"><label>Trainer / Mentor</label><input type="text" id="fTrainer" placeholder="e.g. Pat Doyle"></div>
+    <div class="field"><label>Sales Manager</label><input type="text" id="fManager" placeholder="e.g. Sam Kelly"></div>
+    <div class="modal-actions">
+      <button class="btn ghost" id="cancelAdd">Cancel</button>
+      <button class="btn amber" id="saveAdd">Add Trainee</button>
+    </div>
+  </div>
+</div>
+
+<!-- Certification quiz modal -->
+<div class="modal-bg hidden" id="quizModal">
+  <div class="modal" style="max-width:560px;">
+    <div id="quizModalBody"></div>
+  </div>
+</div>
+
+<script>
+/* ---------------------------------------------------------
+   CURRICULUM DATA
+   Derived from the Campers Inn RV Sales Handbook (Oct 2024):
+   Ch1 Company Overview, Ch2 Sales Process, Ch3 Product
+   Specialists, Ch4 KRAs, Ch6 Sales Notes/Training,
+   Ch7 Misc (Ups Rules, Cross-Shop, Photography),
+   Ch8 Sales Management Addendum (scrimmaging, MCP, Black Box)
+--------------------------------------------------------- */
+const CATS = {
+  orientation:{label:'Orientation', color:'#1f4d3d'},
+  corevalues:{label:'Core Values', color:'#7a4fae'},
+  salesprocess:{label:'Sales Process', color:'#1f4d3d'},
+  product:{label:'Product Knowledge', color:'#b8631c'},
+  shadow:{label:'Shadowing', color:'#2f6f8f'},
+  pdi:{label:'PDI / Delivery', color:'#2f6f8f'},
+  scrimmage:{label:'Scrimmaging', color:'#c94f2f'},
+  crm:{label:'CRM & Systems', color:'#556b2f'},
+  cert:{label:'Certification', color:'#8a6d0c'},
+  supervised:{label:'Supervised Selling', color:'#1f4d3d'},
+  independent:{label:'Independent Selling', color:'#b8631c'}
+};
+
+const CURRICULUM = [
+{
+  id:'p1', name:'Phase 1 · Welcome & Orientation',
+  trackDays:{ 'new':{start:1,end:5}, 'experienced':{start:1,end:3} },
+  goal:'Get set up, meet the team, and learn who Campers Inn RV is before touching the sales floor.',
+  items:[
+    {id:'i1', cat:'orientation', title:'Complete HR onboarding paperwork & benefits enrollment', detail:''},
+    {id:'i2', cat:'orientation', title:'Facility tour — sales floor, service, parts, F&I, PDI/prep area, lot', detail:''},
+    {id:'i3', cat:'orientation', title:'Meet your team', detail:'GM, Sales Manager, fellow RV Matchmakers, F&I, Service Advisor, PDI tech.'},
+    {id:'i4', cat:'orientation', title:'Receive the Sales Handbook and "The Best Seller" (Ron Willingham)', detail:'These are your core training resources for the full 90 days.'},
+    {id:'i5', cat:'crm', title:'Get system logins set up', detail:'DP360 CRM, Sys2K, Motility, email, phone/scheduler.'},
+    {id:'i6', cat:'corevalues', title:'Review company history, Mission & Vision, and "Who We Serve"', detail:'Handbook Ch.1 — the Hirsch family story, Mission, Vision.'},
+    {id:'i7', cat:'corevalues', title:'Learn the 4 Core Values', detail:'Integrity, Teamwork, Excellence, Corporate Sustainability — discuss real on-the-job examples of each with your manager.'},
+    {id:'i8', cat:'orientation', title:'Review the Sales Team Purpose Statement', detail:'Inventory management, the Sales Process, accountability, and training.'},
+    {id:'i9', cat:'shadow', title:'Shadow the daily morning meeting and Black Box Meeting agenda', detail:'Observe how the team reviews weekend business, customer issues, and follow-ups.'},
+    {id:'i10', cat:'orientation', title:'Start Campers Inn University online training modules', detail:''}
+  ]
+},
+{
+  id:'p2', name:'Phase 2 · Orientation Shadowing & Sales Process Foundations',
+  trackDays:{ 'new':{start:6,end:15}, 'experienced':{start:4,end:8} },
+  goal:'Watch the full sales process live, learn the Approach and Interview steps, and start using the CRM.',
+  items:[
+    {id:'i11', cat:'shadow', title:'Shadow 3+ full "ups" start-to-finish', detail:'Ride along with an experienced RV Matchmaker through Approach → Interview → Demonstration → Validate → Negotiate → Close.'},
+    {id:'i12', cat:'shadow', title:'Shadow a delivery', detail:'Including the paperwork handoff to Title/Finance.'},
+    {id:'i13', cat:'pdi', title:'Shadow the PDI/prep team', detail:'Walk a unit before and after Pre-Delivery Inspection to see what gets inspected, repaired, and prepped before it reaches a customer.'},
+    {id:'i14', cat:'salesprocess', title:'Read The Best Seller, Ch. 1–2', detail:'The Sales Power formula and the Approach.', newOnly:true},
+    {id:'i15', cat:'salesprocess', title:'Learn the Approach / meet-and-greet word tracks', detail:'Includes the Pace/Lead system (Penny Paces vs. Quarter Paces) for handling "just looking."'},
+    {id:'i16', cat:'salesprocess', title:'Learn the Interview step', detail:'Objectives and question flow for uncovering needs, wants, and budget.'},
+    {id:'i17', cat:'shadow', title:'Shadow a Black Box / Follow-Up meeting', detail:'Learn to read the Recap Report and Quote Analysis Matrix.'},
+    {id:'i18', cat:'crm', title:'Learn "Ups and Customer Rules"', detail:'Merit-based up rotation, protecting a prospect, B-backs.'},
+    {id:'i19', cat:'scrimmage', title:'Scrimmage #1 with your GM', detail:'Role-play the Approach and rapport-building word tracks.'},
+    {id:'i20', cat:'crm', title:'Learn CRM basics', detail:'Log a customer, complete an RV Locator sheet, complete a trade evaluation form.'}
+  ]
+},
+{
+  id:'p3', name:'Phase 3 · Product Knowledge & Scrimmaging',
+  trackDays:{ 'new':{start:16,end:25}, 'experienced':{start:9,end:13} },
+  goal:'Build real product knowledge, learn the back half of the sales process, and drill it through role-play.',
+  items:[
+    {id:'i21', cat:'product', title:'Deep-dive on your top 2–3 brands with your GM or Sales Manager', detail:'No formal Product Specialist program at this store yet — your GM/Sales Manager leads this directly. Attend a manufacturer product walk-thru presentation if available.'},
+    {id:'i22', cat:'product', title:'Learn your top brand(s)’ Key Selling Features', detail:'Practice translating features into customer benefits. See the Product Reference tab for the Jayco lineup feature/benefit lists.'},
+    {id:'i23', cat:'product', title:'Practice product walkarounds', detail:'One motorhome, one travel trailer, with your GM or Sales Manager observing.'},
+    {id:'i24', cat:'salesprocess', title:'Learn the Demonstration / Interactive Presentation step', detail:'Including test drive procedure.'},
+    {id:'i25', cat:'salesprocess', title:'Learn the Validate step', detail:'Trial closes and confirming fit before negotiating.'},
+    {id:'i26', cat:'salesprocess', title:'Learn the Negotiate & Close step word tracks', detail:''},
+    {id:'i27', cat:'scrimmage', title:'Scrimmage #2 — full sales process role-play', detail:'Approach through Close, recorded and reviewed with your GM.'},
+    {id:'i28', cat:'crm', title:'Learn Trade-In/Check-In & ACV basics', detail:''},
+    {id:'i29', cat:'salesprocess', title:'Learn Cross-Shopping Policies & Guidance', detail:''},
+    {id:'i30', cat:'crm', title:'Shadow a phone-up call using the Phone Script Worksheet', detail:''},
+    {id:'i31', cat:'salesprocess', title:'Review the Sales Power formula & "12 Things That Will Ruin the Sale"', detail:'(Product Knowledge + Sales Know-How + Persuasive Ability) × Achievement Drive = Sales Power. Self-assess against the 12 pitfalls.', newOnly:true},
+    {id:'i32', cat:'salesprocess', title:'Study the RV Matchmaker KRAs', detail:'Sales (47%), Customer Relationships (32%), Increase Selling Capability (21%) — understand how you’ll be measured.'}
+  ]
+},
+{
+  id:'p4', name:'Phase 4 · Floor-Ready Certification', gate:true,
+  trackDays:{ 'new':{start:26,end:30}, 'experienced':{start:14,end:15} },
+  goal:'Prove you’re ready to take live customers. This is the floor-ready gate.',
+  items:[
+    {id:'i33', cat:'cert', title:'Pass a written product knowledge quiz (25 questions) on your top brand(s)', detail:'Take the scored quiz from the 🎓 Product Certification card above (80%+ to pass, self-graded — your GM should still spot-check). Study bank is also in the Product Reference tab.'},
+    {id:'i34', cat:'cert', title:'Pass a full sales-process scrimmage evaluation with your GM', detail:'Graded on word-track fluency across every step. Final scrimmage check-off is always the GM’s call.'},
+    {id:'i35', cat:'cert', title:'Demonstrate CRM proficiency', detail:'Log an up, schedule follow-up activities, pull the Recap Report.'},
+    {id:'i36', cat:'cert', title:'Set your first 30/60/90 sales volume goal + a motivational goal', detail:'The index-card exercise from Ch.6: goal, target date, and personal reward.'},
+    {id:'i37', cat:'cert', title:'Set up your Salesperson Goal Sheet', detail:''},
+    {id:'i38', cat:'cert', title:'Manager sign-off: Floor-Ready Certification', detail:'Go / no-go decision to enter the live up rotation.'}
+  ]
+},
+{
+  id:'p5', name:'Phase 5 · Supervised Selling',
+  trackDays:{ 'new':{start:31,end:60}, 'experienced':{start:16,end:30} },
+  goal:'Sell live, with a 100% Manager Check Point on every customer, while ramping toward independence.',
+  items:[
+    {id:'i39', cat:'supervised', title:'Take live ups with 100% Manager Check Point (MCP)', detail:'Manager reviews every customer before they go to the lot.'},
+    {id:'i40', cat:'supervised', title:'Present daily in the Black Box Meeting on your own ups', detail:''},
+    {id:'i41', cat:'supervised', title:'Run a solo product walkaround for a live customer', detail:'Manager observing.'},
+    {id:'i42', cat:'supervised', title:'Run a solo Demonstration & test drive', detail:''},
+    {id:'i43', cat:'supervised', title:'Complete a Trade Evaluation on a live customer', detail:''},
+    {id:'i44', cat:'supervised', title:'Deliver your first RV', detail:'Mentor or manager present for the delivery walk-through.'},
+    {id:'i45', cat:'supervised', title:'Weekly 1-on-1 goal sheet review with your Sales Manager', detail:''},
+    {id:'i46', cat:'supervised', title:'Weekly unit walk of your assigned inventory', detail:''},
+    {id:'i47', cat:'scrimmage', title:'Continue scrimmaging 2x/week', detail:'Focus on objection handling and negotiation. Each session signed off by your GM.'},
+    {id:'i48', cat:'supervised', title:'Mid-Supervised-Selling Review — KRA self-assessment vs. actuals', detail:'Day 30 on the standard track, roughly Day 20 on the experienced fast-track.'},
+    {id:'i49', cat:'product', title:'Start a "Key Selling Features" reference list for your top brands', detail:'Keep it updated and share it with the team — useful groundwork even without a formal Product Specialist program.'},
+    {id:'i50', cat:'supervised', title:'Close your first solo sale', detail:'Manager available but not on the floor for it.'}
+  ]
+},
+{
+  id:'p6', name:'Phase 6 · Independent Selling & Specialization',
+  trackDays:{ 'new':{start:61,end:90}, 'experienced':{start:31,end:45} },
+  goal:'Sell independently, deepen your product expertise, and complete your final program review.',
+  items:[
+    {id:'i51', cat:'independent', title:'MCP shifts to spot-check basis', detail:'Per manager discretion.'},
+    {id:'i52', cat:'product', title:'Lead a short product training session for the team (optional stretch goal)', detail:'Coordinate with your GM — pick 1–2 brands you know well, build a short walk-thru presentation plus a quiz for the team.'},
+    {id:'i53', cat:'product', title:'Contact a manufacturer rep for your top brand', detail:'Coordinate with your GM to establish the relationship and schedule a training visit (brand reps typically train staff every 6 months).'},
+    {id:'i54', cat:'independent', title:'Participate in a show or major weekend event preparation cycle', detail:'If applicable at your store.'},
+    {id:'i55', cat:'independent', title:'Track your closing ratio', detail:'Target 20%+, stretch goal 30%+.'},
+    {id:'i56', cat:'independent', title:'Early-Independent-Selling Review — KRA & goal sheet review with Sales Manager', detail:'Day 60 on the standard track, roughly Day 35 on the experienced fast-track.'},
+    {id:'i57', cat:'independent', title:'Handle a customer objection/negotiation solo', detail:'Debrief with your manager afterward.'},
+    {id:'i58', cat:'corevalues', title:'Mentor or assist a newer hire on one task', detail:'Teamwork core value in action.'},
+    {id:'i59', cat:'independent', title:'Final Program Review', detail:'Full KRA evaluation, pay plan check-in, set next-quarter goals. Day 90 on the standard track, roughly Day 45 on the experienced fast-track.'},
+    {id:'i60', cat:'cert', title:'Manager sign-off: Program Complete', detail:''}
+  ]
+}
+];
+
+/* ---------------------------------------------------------
+   PRODUCT REFERENCE DATA
+   Pulled from current Jayco sales sheets (Pinnacle, Eagle HT
+   FW/TT, Jay Feather Air, Jay Flight Bungalow, Jay Flight SLX,
+   North Point). Specs/pricing change — confirm with GM before
+   quoting a customer.
+--------------------------------------------------------- */
+const BRAND_FEATURES = {
+  'Jayco':[
+    {feature:'Jayco 2+3 Warranty', benefit:'Extends well beyond the industry-standard 1-year warranty most competitors offer. Confirm the exact year-by-year coverage with your GM/warranty booklet before quoting terms to a customer.'},
+    {feature:'100% Pre-Delivery Inspection', benefit:'Every unit is inspected before it reaches a customer — this is exactly what you shadowed during your Phase 2 PDI shadowing. Great trust-builder in the Interview/Validate steps.'},
+    {feature:'Magnum Truss™ Roof System', benefit:'Stronger roof structure across the lineup — on some models rated to handle 50% more weight (up to 4,500 lbs) with a lifetime warranty. Good answer for snow-load or rooftop cargo questions.'},
+    {feature:'Stronghold VBL™ Laminated Walls', benefit:'Vacuum-bonded laminated walls resist delamination — a durability talking point vs. stick-and-staple competitors.'},
+    {feature:'Climate Shield™ Protection Package (most models)', benefit:'Radiant-barrier insulation in the floor, front wall and roof, rated 0°–100°F comfort range — key for shoulder-season or variable-climate campers.'},
+    {feature:'JAYCOMMAND® Smart RV System (select models)', benefit:'App-based control of coach systems and battery management — a differentiator for tech-forward buyers. Confirm which trim levels include it before promising a customer.'}
+  ],
+  'Forest River (Flagstaff)':[
+    {feature:'Composite Wall Construction (most models)', benefit:'No wood framing inside the walls to rot or delaminate — durability story that beats wood-framed competitors, similar pitch to Jayco’s Stronghold VBL walls.'},
+    {feature:'6-Sided Full-Aluminum Frame (most models)', benefit:'The whole structure — not just the walls — is aluminum framed. Strong rebuttal to "these things fall apart," especially against older or budget trailers.'},
+    {feature:'MORryde Strut Assist Steps', benefit:'Safer, sturdier entry/exit than a basic fold-out step — worth pointing out to families and older buyers on the walkaround.'},
+    {feature:'12V Thermostat-Controlled Heated Tanks (Climate Protection Package, most models)', benefit:'Keeps holding tanks from freezing in cold weather automatically — good for shoulder-season or cold-climate campers.'},
+    {feature:'AeroCore Climate™ Laminated Foam Ducting System', benefit:'Foam ducting insulates better than bare metal ductwork — a comfort/efficiency detail that differentiates Flagstaff from bargain-tier trailers.'}
+  ]
+};
+// Kept for backward compatibility with any external references.
+const UNIVERSAL_FEATURES = BRAND_FEATURES['Jayco'];
+
+const PRODUCT_LINES = [
+  {
+    id:'jayflightslx', brand:'Jayco', name:'Jay Flight SLX', type:'Travel Trailer', tier:'Entry / Value',
+    price:'$15,995', weight:'3,295 – 8,900 lbs', length:'21\'5" – 40\'4"', sleeps:'Up to 10',
+    bestFor:'First-time buyers and budget-conscious families entering RVing. Wide weight range means confirming the customer’s tow vehicle before falling in love with a floorplan.',
+    features:[
+      {feature:'Widest price range in our lineup', benefit:'Starting under $16K, SLX is the easiest "yes" for a first-time buyer nervous about the price of RVing.'},
+      {feature:'Solid hardwood cabinet doors & drawers', benefit:'Feels a step above other entry-level trailers — good rebuttal when a customer says "it looks cheap."'},
+      {feature:'Solid Step® entry with folding assist handle', benefit:'Safer, sturdier entry/exit — a real concern for older buyers or families with young kids.'},
+      {feature:'LP quick connect', benefit:'Easy BBQ/griddle hookup — a lifestyle feature that resonates with weekend campers.'},
+      {feature:'On-demand tankless water heater', benefit:'Continuous hot water, no waiting on a tank to reheat — kills the "will we run out of hot water" objection.'}
+    ]
+  },
+  {
+    id:'jayfeatherair', brand:'Jayco', name:'Jay Feather Air', type:'Travel Trailer', tier:'Lightweight',
+    price:'$31,118', weight:'3,915 – 4,400 lbs', length:'20\'2" – 23\'', sleeps:'Up to 5',
+    bestFor:'Couples or small families with a smaller SUV/crossover who can’t (or don’t want to) tow a heavier trailer.',
+    features:[
+      {feature:'Lightest tow weight in our lineup', benefit:'Towable by many mid-size SUVs — opens the door to customers who think they "can’t tow an RV."'},
+      {feature:'60,000 BTU tankless water heater (55-gal. tank)', benefit:'Continuous hot water in a small footprint — punches above its weight class on comfort.'},
+      {feature:'Plywood bed, bunk, dinette & shower bases', benefit:'Real furniture construction, not particle board — durability story for a lightweight unit.'},
+      {feature:'Power tongue jack + quick-drop stabilizers', benefit:'Fast, easy setup — great for a customer worried about the hassle of towing/leveling.'}
+    ]
+  },
+  {
+    id:'eagleHTtt', brand:'Jayco', name:'Eagle HT TT', type:'Travel Trailer', tier:'Half-Ton Towable',
+    price:'$41,250', weight:'6,575 – 9,795 lbs', length:'27\'6" – 38\'8"', sleeps:'Up to 10',
+    bestFor:'Customers shopping by tow vehicle who want to stay within a half-ton truck/SUV rating. Always confirm the specific floorplan weight against their actual tow rating.',
+    features:[
+      {feature:'"HT" = Half-Ton towable', benefit:'Built to stay within many popular half-ton pickup/SUV tow ratings — a strong hook for customers who don’t want to buy a bigger truck.'},
+      {feature:'Olympic-sized 66"x80" bed with Aloe Vera cooling tech', benefit:'Feels like a real bedroom, not a camper bunk — big for full hookup/extended stay buyers.'},
+      {feature:'Residential-sized GE 10-cu. ft. refrigerator', benefit:'Cools in 20 minutes and runs colder — less food spoilage than typical RV fridges.'},
+      {feature:'Magnum Truss roof rated for 50% more weight (4,500 lbs)', benefit:'Lifetime roof warranty — durability answer for skeptical buyers.'}
+    ]
+  },
+  {
+    id:'eagleHTfw', brand:'Jayco', name:'Eagle HT FW', type:'Fifth Wheel', tier:'Half-Ton Towable',
+    price:'$48,750', weight:'8,000 – 10,685 lbs', length:'29\'4" – 37\'6"', sleeps:'Up to 10',
+    bestFor:'Customers who want fifth-wheel stability and space but only have (or want) a half-ton truck with a bed-mounted hitch.',
+    features:[
+      {feature:'Fifth wheel hitch vs. bumper-pull', benefit:'Tows more stably at highway speed and feels more spacious than a comparable travel trailer — explain the trade-off: needs a truck with a bed hitch.'},
+      {feature:'Outdoor kitchen with JayPort quick connect + sink', benefit:'Keeps cooking mess outside — a lifestyle feature that sells itself on a walkaround.'},
+      {feature:'100% no floor registers', benefit:'More usable floor space and fewer tripping hazards — a subtle but real day-to-day livability win.'},
+      {feature:'4-Star Handling Package (Dexter axles, Goodyear Endurance tires)', benefit:'Durability and towing-confidence talking point for a first-time fifth-wheel buyer.'}
+    ]
+  },
+  {
+    id:'jayflightbungalow', brand:'Jayco', name:'Jay Flight Bungalow', type:'Destination Trailer', tier:'Park Model',
+    price:'$79,718', weight:'11,155 – 12,450 lbs', length:'40\'4" – 41\'11"', sleeps:'Up to 9',
+    bestFor:'Customers wanting a seasonal home base at a campground or lake site — not a frequent highway tow rig. Qualify this early: is this their weekend camper or a destination unit?',
+    features:[
+      {feature:'Built-in central vacuum system', benefit:'A genuinely residential feature — strong "why not just buy a cabin" rebuttal.'},
+      {feature:'36-in. electric fireplace (secondary heat source)', benefit:'Ambiance plus function — resonates with buyers picturing a cozy seasonal getaway.'},
+      {feature:'Two 15,000 BTU Whisper Quiet A/Cs', benefit:'Handles hot climates without the noise — important for a unit meant to be lived in, not just slept in.'},
+      {feature:'50-in. LED Smart TV + AM/FM/Bluetooth stereo w/ interior & exterior speakers', benefit:'Entertainment package that matches a full-time or seasonal lifestyle, not a weekend trip.'}
+    ]
+  },
+  {
+    id:'northpoint', brand:'Jayco', name:'North Point', type:'Fifth Wheel', tier:'Luxury',
+    price:'$108,975', weight:'12,875 – 16,055 lbs', length:'36\'0" – 43\'10"', sleeps:'Up to 8',
+    bestFor:'A step-up buyer who wants Pinnacle-level features at a lower entry price — good middle option when Pinnacle feels like too much.',
+    features:[
+      {feature:'Painted fiberglass front cap w/ built-in LED lighting', benefit:'Premium curb appeal on the lot walkaround — customers notice this before they even step inside.'},
+      {feature:'GE Profile appliance package (21-cu. ft. fridge + air fryer microwave)', benefit:'Same residential cooking experience as Pinnacle at a lower starting price — good value argument.'},
+      {feature:'5-Star Handling Package', benefit:'Uniroyal "H" rated tires, Dexter axles w/ ABS, MORryde LRE-4000 suspension — smoothest, safest tow in the FW lineup.'},
+      {feature:'High-output JBL Bluetooth/HDMI sound system w/ soundbar', benefit:'Noticeably better entertainment experience than base-tier units — a nice differentiator in a demo.'}
+    ]
+  },
+  {
+    id:'pinnacle', brand:'Jayco', name:'Pinnacle', type:'Fifth Wheel', tier:'Luxury / Flagship',
+    price:'$120,243', weight:'13,530 – 15,455 lbs', length:'36\'5" – 44\'5"', sleeps:'Up to 8',
+    bestFor:'Full-time or luxury-minded buyers who want the most residential experience in the lineup and are equipped to tow a heavier fifth wheel (confirm they have a 3/4-ton+ truck).',
+    features:[
+      {feature:'Power theater seating w/ heat, massage & power recline', benefit:'The comfort feature that closes deals with buyers cross-shopping premium brands.'},
+      {feature:'Dishwasher under the sink (most models)', benefit:'No hand-washing dishes on a trip — a top objection-killer for a skeptical spouse.'},
+      {feature:'GE Appliance Package: 21-cu. ft. fridge + 30-in. convection microwave w/ air fryer', benefit:'Full residential kitchen experience — a core reason full-timers pick Pinnacle.'},
+      {feature:'High-capacity LP storage (three 40-lb. bottles, 120 lbs. total)', benefit:'Far fewer propane refills — a real convenience win for extended stays.'}
+    ]
+  },
+  {
+    id:'flagstaffaframe', brand:'Forest River (Flagstaff)', name:'Flagstaff A Frame', type:'Folding / A-Frame Camper', tier:'Entry — Folding',
+    price:'Ask GM — confirm on lot', weight:'Varies by floorplan', length:'Varies by floorplan', sleeps:'Varies by floorplan',
+    bestFor:'Budget-minded or storage-conscious buyers who want easy towing and a small storage footprint. It folds down for towing/storage and sets up like a full camper — a great intro RV that doesn’t feel intimidating to tow or store.',
+    features:[
+      {feature:'Folds down for towing & storage', benefit:'Tows and stores like a small trailer, sets up like a full camper — huge selling point for driveway/HOA storage restrictions.'},
+      {feature:'Dexter® Torflex® Axles + Radial Tires w/ Nitrogen (standard)', benefit:'Smooth, durable ride standard, no upsell needed — reassures a first-time buyer about reliability.'},
+      {feature:'12V Refrigerator w/ 125W Roof Solar Panel (Core Convenience Package)', benefit:'Off-grid capability out of the box on this package — good for boondocking-curious customers.'},
+      {feature:'Power Roof Lift (units with Dormers)', benefit:'Push-button setup instead of hand-crank — removes the #1 hesitation people have about folding campers: "is it a hassle to set up?"'},
+      {feature:'Vibrant Venture Package (color fiberglass, Moonshade awning, 200W solar, roof rack)', benefit:'Bundles the most-requested upgrades into one option — easier to sell than a la carte add-ons.'}
+    ]
+  },
+  {
+    id:'flagstaffclassic', brand:'Forest River (Flagstaff)', name:'Flagstaff Classic Travel Trailers', type:'Travel Trailer', tier:'Mid/Upper — Feature-Rich',
+    price:'Ask GM — confirm on lot', weight:'Varies by floorplan', length:'Varies by floorplan', sleeps:'Varies by floorplan',
+    bestFor:'Buyers who want the most residential features in a standard travel trailer and are willing to step up trim levels — strong option when a customer is cross-shopping higher-end brands.',
+    features:[
+      {feature:'6-Sided Full-Aluminum Frame + Composite Wall Construction (standard)', benefit:'No wood framing to rot — durability story that beats wood-framed competitors at this price point.'},
+      {feature:'Climate Protection Package (standard)', benefit:'12V thermostat-controlled heated tanks + radiant foil insulation come standard, not an upsell — good for cold-weather or shoulder-season campers.'},
+      {feature:'MORryde Strut Assist Steps w/ Solid Entry Rail', benefit:'Safer entry/exit — worth mentioning to families with kids or older buyers.'},
+      {feature:'Campfire Comfort Package (top option): Starlink Prep, Smart TV, Fireplace, Dual 15K BTU AC, residential gas range', benefit:'This is the "loaded" trim — walk a customer through it when they ask "what’s the most you offer?"'},
+      {feature:'NEXT GEN Water Filtration + Solid Surface Countertops (Campfire Comfort Package)', benefit:'Residential kitchen feel — a strong comparison point against destination trailers costing much more.'}
+    ]
+  },
+  {
+    id:'flagstaffepro', brand:'Forest River (Flagstaff)', name:'Flagstaff E-Pro', type:'Travel Trailer — Lightweight/Entry', tier:'Entry (LE sub-trim available)',
+    price:'Ask GM — confirm on lot', weight:'Varies by floorplan', length:'Varies by floorplan', sleeps:'Varies by floorplan',
+    bestFor:'First-time or budget-focused buyers. The LE sub-trim is the most affordable entry point in the Flagstaff lineup; the standard E-Pro trim adds real comfort features for a modest step up.',
+    features:[
+      {feature:'Two trim levels: standard E-Pro and LE', benefit:'Gives you a true good/better conversation inside one product line — LE for the tightest budget, standard E-Pro for more features.'},
+      {feature:'MORryde Solid, Supported Steps (standard)', benefit:'A safety/quality feature standard even at the entry tier — good rebuttal to "this feels cheap."'},
+      {feature:'Sunset Seeker Package: Vacuum Laminated Roof, Frameless Windows, Power Pro Voice-Activated Control Panel, Smart TV', benefit:'Meaningful step-up package for a customer who likes E-Pro but wants more tech/comfort without jumping to Classic.'},
+      {feature:'Dexter® Torflex® Axles (standard on non-LE)', benefit:'Smoother ride than leaf-spring — worth explaining the difference vs. the LE’s Dexter leaf-spring axles.'}
+    ]
+  },
+  {
+    id:'flagstaffmicrolite', brand:'Forest River (Flagstaff)', name:'Flagstaff Micro Lite', type:'Travel Trailer — Lightweight', tier:'Value / Lightweight',
+    price:'Ask GM — confirm on lot', weight:'Varies by floorplan', length:'Varies by floorplan', sleeps:'Varies by floorplan',
+    bestFor:'Buyers who want Flagstaff Classic-level construction quality (aluminum frame, composite walls) in a lighter, easier-to-tow package.',
+    features:[
+      {feature:'6-Sided Full-Aluminum Frame + Composite Walls (standard)', benefit:'Same core construction quality as Flagstaff Classic in a lighter trailer — a "step up without the Classic price" pitch.'},
+      {feature:'Climate Protection Package (standard)', benefit:'Heated tanks and radiant foil insulation standard — a solid 3-season/shoulder-season camper.'},
+      {feature:'Great Expectations Package: Vacuum Laminated Roof, Frameless Windows, Starlink Prep, Solid Surface Countertops, Fireplace (where available)', benefit:'The loaded option for a customer who wants Micro Lite’s light weight but doesn’t want to sacrifice comfort features.'},
+      {feature:'PSX2 Power Stabilizers + Power Tongue Jack (Great Expectations Package)', benefit:'Push-button setup — a real convenience difference vs. manual stabilizers on competing lightweight trailers.'}
+    ]
+  }
+];
+
+const QUIZ_BANK = [
+  {tag:'All Jayco', q:'What does the Jayco 2+3 Warranty represent, and why does it matter in a sales conversation?', a:'It extends well beyond the industry-standard 1-year warranty most competitors offer. Confirm exact year-by-year terms with your GM, but the headline is: Jayco stands behind the build for longer than most brands.'},
+  {tag:'All Jayco', q:'What percentage of Jayco units get inspected before delivery, and how does this connect to your own onboarding?', a:'100% — every unit gets a Pre-Delivery Inspection. This is exactly what you shadowed during your Phase 2 PDI shadowing.'},
+  {tag:'All Jayco', q:'Name two structural features common across the Jayco lineup you’d point out on a walkaround.', a:'Magnum Truss™ Roof System and Stronghold VBL™ laminated walls (also acceptable: custom-built frames).'},
+  {tag:'All Jayco', q:'A customer asks, "why not buy a cheaper stick-and-staple trailer?" How do you answer using Jayco’s wall construction?', a:'Stronghold VBL walls are vacuum-bonded and laminated, not just stapled together — they resist delamination and hold up better over time.'},
+  {tag:'All Jayco', q:'What temperature range is the Climate Shield package rated for, and which customer should you mention it to?', a:'0°F to 100°F. Mention it to shoulder-season or cold/hot-climate campers.'},
+  {tag:'All Jayco', q:'True or False: JAYCOMMAND is available on every Jayco model in our lineup.', a:'False — it’s on select models. Confirm trim level before promising a customer.'},
+  {tag:'Jay Flight SLX', q:'What is the Jay Flight SLX’s starting price, and who is the ideal customer?', a:'$15,995 starting; a first-time buyer or budget-conscious family entering RVing.'},
+  {tag:'Jay Flight SLX', q:'The SLX weight range is 3,295–8,900 lbs. Why does that wide range matter in the Interview step?', a:'You must confirm the customer’s actual tow vehicle capacity before quoting a specific SLX floorplan — the range spans very different tow requirements.'},
+  {tag:'Jay Flight SLX', q:'Name one feature that makes the SLX feel a step above other entry-level trailers.', a:'Solid hardwood cabinet doors and drawers, or the Solid Step® entry with folding assist handle.'},
+  {tag:'Jay Feather Air', q:'How does the Jay Feather Air’s weight compare to the SLX, and what customer does that open up?', a:'Much lighter — 3,915–4,400 lbs vs. up to 8,900 lbs for SLX — ideal for smaller SUVs/crossovers that can’t tow a heavier trailer.'},
+  {tag:'Jay Feather Air', q:'What is the Jay Feather Air’s sleep capacity, and what buyer profile fits best?', a:'Sleeps up to 5 — good for couples or small families wanting an easy-tow weekend unit.'},
+  {tag:'Jay Feather Air', q:'What water heater feature would you highlight, and what objection does it solve?', a:'60,000 BTU on-demand tankless water heater with a 55-gal. tank — continuous hot water, kills the "will we run out" objection.'},
+  {tag:'Eagle HT TT', q:'What does "HT" signal to a customer shopping by tow vehicle?', a:'Half-Ton towable — built to stay within many popular half-ton pickup/SUV tow ratings. Always confirm the exact floorplan weight against their tow rating.'},
+  {tag:'Eagle HT TT', q:'Name a standout comfort feature on the Eagle HT TT.', a:'The Olympic-sized 66"x80" bed with Aloe Vera cooling technology, or the residential-sized 10-cu. ft. GE refrigerator.'},
+  {tag:'Eagle HT TT', q:'What roofing claim can you make confidently about the Eagle HT TT?', a:'The Magnum Truss roof handles up to 50% more weight (4,500 lbs.) and carries a lifetime warranty.'},
+  {tag:'Eagle HT FW', q:'How does the Eagle HT FW differ from the Eagle HT TT in hitch type, and why might a customer prefer it?', a:'It’s a fifth wheel (hitches in the truck bed) vs. a bumper-pull travel trailer — fifth wheels tow more stably and feel more spacious, but require a truck with a bed-mounted hitch.'},
+  {tag:'Eagle HT FW', q:'What is the Eagle HT FW’s sleep capacity and starting price?', a:'Sleeps up to 10; starting at $48,750.'},
+  {tag:'Eagle HT FW', q:'Name the outdoor living feature on the Eagle HT FW.', a:'The outdoor kitchen with JayPort hot/cold quick connect and sink.'},
+  {tag:'Jay Flight Bungalow', q:'What type of RV is the Bungalow, and how should you qualify a customer before showing it?', a:'A destination/park-model trailer built for a semi-permanent site, not frequent highway towing — confirm the customer wants a seasonal home base, not a weekend tow rig.'},
+  {tag:'Jay Flight Bungalow', q:'Name two "residential feel" features that justify the price jump from a standard travel trailer.', a:'The built-in central vacuum system and the 36-in. electric fireplace (also acceptable: 50-in. LED Smart TV, residential-sized appliances).'},
+  {tag:'Jay Flight Bungalow', q:'The Bungalow’s length range is 40\'4"–41\'11". What does that mean for site requirements?', a:'The customer needs a long-term or seasonal campground site, not a typical overnight pull-through spot.'},
+  {tag:'North Point', q:'How does North Point compare to Pinnacle in market position?', a:'Both are luxury fifth wheels; North Point starts lower ($108,975 vs. Pinnacle’s $120,243) — a good middle option for a customer who wants Pinnacle-level features at a lower entry price.'},
+  {tag:'North Point', q:'What construction feature would you point out on the North Point exterior walkaround?', a:'The painted fiberglass front cap with clear coat and built-in specialty LED lighting, or the Stronghold VBL gel-coated fiberglass walls.'},
+  {tag:'North Point', q:'What kitchen feature does North Point share with Pinnacle that Eagle HT doesn’t have?', a:'The GE Profile/GE Appliance package with a 30-in. convection microwave with air fryer.'},
+  {tag:'Pinnacle', q:'What’s the standout comfort feature that closes deals with buyers cross-shopping premium brands?', a:'Power theater seating with heat, massage, and power recline.'},
+  {tag:'Pinnacle', q:'Pinnacle’s weight range is 13,530–15,455 lbs. What tow vehicle conversation does that trigger?', a:'This needs a heavy-duty (3/4-ton or larger) truck — always confirm the customer’s actual tow vehicle before they fall in love with a Pinnacle floorplan.'},
+  {tag:'Pinnacle', q:'Name the top-tier appliance package feature unique to Pinnacle vs. lower-tier models.', a:'The dishwasher under the sink, included on most Pinnacle models.'},
+  {tag:'All Forest River (Flagstaff)', q:'What construction feature do most Flagstaff models share that competes with Jayco’s Stronghold VBL walls?', a:'Composite wall construction — no wood framing inside the walls to rot or delaminate.'},
+  {tag:'All Forest River (Flagstaff)', q:'What does the Climate Protection Package add, and on which Flagstaff lines is it standard?', a:'12V thermostat-controlled heated tanks plus radiant foil insulation. It’s standard on Classic and Micro Lite, and included (minus LE trim) on E-Pro.'},
+  {tag:'All Forest River (Flagstaff)', q:'What step system does Forest River use across most Flagstaff models, and why does it matter?', a:'MORryde Strut Assist Steps — sturdier and safer than a basic fold-out step, worth pointing out to families and older buyers.'},
+  {tag:'Flagstaff A Frame', q:'What is the Flagstaff A Frame, and what customer objection does its folding design solve?', a:'A folding/pop-up style camper that collapses for towing and storage — solves the "I don’t have room to store an RV" or HOA storage-restriction objection.'},
+  {tag:'Flagstaff A Frame', q:'What does the Power Roof Lift option solve for a hesitant customer?', a:'It replaces hand-crank setup with push-button setup, addressing the top concern people have about folding campers being a hassle to set up.'},
+  {tag:'Flagstaff A Frame', q:'What’s included in the Vibrant Venture Package?', a:'Color fiberglass (Satin Pine or Slate Gray), Moonshade Awning, 200W Solar Panel, and ProRac roof rack.'},
+  {tag:'Flagstaff Classic Travel Trailers', q:'What is the Flagstaff Classic’s frame and wall construction, and how do you use it against a wood-framed competitor?', a:'6-Sided Full-Aluminum Frame with composite wall construction — no wood to rot, a durability story that beats wood-framed trailers at a similar price.'},
+  {tag:'Flagstaff Classic Travel Trailers', q:'What does the Campfire Comfort Package add, and when would you bring it up?', a:'The top trim package — Starlink Prep, Smart TV, fireplace, dual 15K BTU AC, residential gas range, and more. Bring it up when a customer asks "what’s the most you offer?"'},
+  {tag:'Flagstaff Classic Travel Trailers', q:'Is the Climate Protection Package standard or optional on Flagstaff Classic?', a:'Standard — 12V thermostat-controlled heated tanks and radiant foil insulation come standard, not as an upsell.'},
+  {tag:'Flagstaff E-Pro', q:'What are the two trim levels on the Flagstaff E-Pro line, and how do you use that in a sales conversation?', a:'Standard E-Pro and LE (a lighter, more affordable sub-trim). It gives you a built-in good/better conversation without leaving the product line.'},
+  {tag:'Flagstaff E-Pro', q:'What does the Sunset Seeker Package add over base E-Pro?', a:'Vacuum laminated roof, frameless windows, a voice-activated Power Pro control panel, and a 12V smart TV — a meaningful step-up without jumping to Classic.'},
+  {tag:'Flagstaff E-Pro', q:'What’s the key axle difference between standard E-Pro and the LE trim?', a:'Standard E-Pro uses Dexter® Torflex® axles (smoother ride); LE uses Dexter® leaf-spring axles w/ E-Z Lube® — explain the ride-quality trade-off if a customer is deciding between trims.'},
+  {tag:'Flagstaff Micro Lite', q:'How does the Micro Lite compare to Flagstaff Classic in construction quality?', a:'Same core construction — 6-sided full-aluminum frame and composite walls — just in a lighter, easier-to-tow package.'},
+  {tag:'Flagstaff Micro Lite', q:'What does the Great Expectations Package add to the Micro Lite?', a:'Vacuum laminated roof, frameless windows, Starlink prep, solid surface countertops, and a fireplace where available — the loaded option for buyers who want comfort without extra weight.'},
+  {tag:'Flagstaff Micro Lite', q:'What convenience feature does PSX2 Power Stabilizers replace?', a:'Manual stabilizer jacks — push-button setup instead of hand-cranking, a real time-saver at camp.'}
+];
+
+const CERT_PASS_PCT = 80;
+function getQuestionsForBrand(brand){
+  return QUIZ_BANK.filter(item=>{
+    const brandOfTag = PRODUCT_LINES.find(m=>m.name===item.tag)?.brand;
+    return item.tag.includes(brand) || brandOfTag===brand;
+  });
+}
+function shuffleArray(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+// TOTAL_ITEMS kept for the 'new' (standard) track for backward compatibility.
+const TOTAL_ITEMS = CURRICULUM.reduce((n,p)=>n+p.items.length,0);
+const STORAGE_KEY = 'campersInnRoadmap_v1';
+
+const TRACKS = {
+  'new': {label:'New to Sales', short:'🌱 New'},
+  'experienced': {label:'Experienced RV Salesperson (Fast-Track)', short:'⚡ Fast-Track'}
+};
+function trackOf(t){ return t && t.track==='experienced' ? 'experienced' : 'new'; }
+function itemsForTrack(items, track){ return track==='experienced' ? items.filter(it=>!it.newOnly) : items; }
+function phaseDayRange(phase, track){ return phase.trackDays[track] || phase.trackDays['new']; }
+function phaseDayLabel(phase, track){ const r = phaseDayRange(phase, track); return 'Days '+r.start+'–'+r.end; }
+function totalItemsForTrack(track){
+  return CURRICULUM.reduce((n,p)=>n+itemsForTrack(p.items, track).length, 0);
+}
+// This store has no Product Specialist role — the GM personally gives final sign-off on every scrimmage/role-play checkpoint.
+const GM_SIGNOFF_ITEMS = new Set(['i19','i27','i34','i47']);
+
+/* ---------------- STATE ---------------- */
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return {trainees:[]};
+}
+function saveState(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+let state = loadState();
+let currentTraineeId = null;
+let activeFilter = 'all';
+
+/* ---------------- HELPERS ---------------- */
+function uid(){ return 't_'+Math.random().toString(36).slice(2,10); }
+function dayOfProgram(startDate){
+  if(!startDate) return 0;
+  const start = new Date(startDate+'T00:00:00');
+  const today = new Date(); today.setHours(0,0,0,0);
+  const diff = Math.floor((today-start)/86400000)+1;
+  return diff;
+}
+function getTrainee(id){ return state.trainees.find(t=>t.id===id); }
+function progressFor(t){
+  const track = trackOf(t);
+  let done=0;
+  CURRICULUM.forEach(p=>itemsForTrack(p.items, track).forEach(it=>{
+    if(t.progress[it.id] && t.progress[it.id].done) done++;
+  }));
+  const total = totalItemsForTrack(track);
+  return {done, total, pct: Math.round(done/total*100)};
+}
+function phaseProgress(t, phase){
+  const track = trackOf(t);
+  const items = itemsForTrack(phase.items, track);
+  let done=0;
+  items.forEach(it=>{ if(t.progress[it.id] && t.progress[it.id].done) done++; });
+  return {done, total: items.length, pct: items.length ? Math.round(done/items.length*100) : 100};
+}
+function floorReadyState(t){
+  const track = trackOf(t);
+  const day = dayOfProgram(t.startDate);
+  const p4 = CURRICULUM.find(p=>p.id==='p4');
+  const targetDay = phaseDayRange(p4, track).end;
+  const fp = phaseProgress(t, p4);
+  const certified = fp.done===fp.total;
+  if(certified) return {status:'good', text:'✅ Floor-Ready Certified'+(day?(' — completed by Day '+Math.min(day,targetDay)):'')};
+  if(day<targetDay) return {status:'pending', text:'⏳ Floor-Ready target: Day '+targetDay+' ('+(targetDay-day)+' day'+(targetDay-day===1?'':'s')+' to go) — '+fp.done+'/'+fp.total+' certification tasks done'};
+  return {status:'warn', text:'⚠️ Day '+day+' — Floor-Ready certification is overdue ('+fp.done+'/'+fp.total+' tasks complete)'};
+}
+function certSummary(t){
+  const brands = ALL_BRANDS || [];
+  if(brands.length===0) return '<span class="meta-line">—</span>';
+  const certifiedCount = brands.filter(b=> (t.certs||{})[b]?.passed).length;
+  const pills = brands.map(b=>{
+    const rec = (t.certs||{})[b];
+    const short = b.length>14 ? b.replace('Forest River (Flagstaff)','Flagstaff') : b;
+    if(rec && rec.passed) return `<span class="cert-pill" style="background:#e5f4ea;color:var(--good);">${escapeHtml(short)} ✓</span>`;
+    if(rec) return `<span class="cert-pill" style="background:#fbe9e4;color:var(--warn);">${escapeHtml(short)} ${rec.bestPct}%</span>`;
+    return `<span class="cert-pill" style="background:#f2f0e8;color:var(--muted);">${escapeHtml(short)} —</span>`;
+  }).join('');
+  return pills;
+}
+
+function currentPhaseFor(t){
+  const track = trackOf(t);
+  const day = dayOfProgram(t.startDate);
+  let phase = CURRICULUM.find(p=>{ const r = phaseDayRange(p, track); return day>=r.start && day<=r.end; });
+  if(!phase){ phase = day<1 ? CURRICULUM[0] : CURRICULUM[CURRICULUM.length-1]; }
+  return phase;
+}
+
+/* ---------------- RENDER: ROSTER ---------------- */
+function renderRoster(){
+  const body = document.getElementById('rosterBody');
+  const empty = document.getElementById('rosterEmpty');
+  body.innerHTML='';
+  if(state.trainees.length===0){ empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+  state.trainees.forEach(t=>{
+    const prog = progressFor(t);
+    const day = dayOfProgram(t.startDate);
+    const fr = floorReadyState(t);
+    const tr = document.createElement('tr');
+    tr.className='trainee-row';
+    tr.dataset.id=t.id;
+    tr.innerHTML = `
+      <td><strong>${escapeHtml(t.name)}</strong><div class="meta-line">${escapeHtml(TRACKS[trackOf(t)].short)}</div></td>
+      <td>${escapeHtml(t.store||'—')}</td>
+      <td>${t.startDate||'—'}</td>
+      <td>${day>0?('Day '+day):'—'}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="progress-outer"><div class="progress-inner" style="width:${prog.pct}%"></div></div>
+          <span style="font-size:.78rem;color:var(--muted);">${prog.pct}%</span>
+        </div>
+      </td>
+      <td><span class="badge ${fr.status==='good'?'good':fr.status==='warn'?'warn':'pending'}">${fr.status==='good'?'Floor-Ready':fr.status==='warn'?'Overdue':'In Progress'}</span></td>
+      <td>${certSummary(t)}</td>
+      <td><button class="btn ghost small" data-open="${t.id}">Open</button></td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+/* ---------------- RENDER: DETAIL ---------------- */
+function renderFilters(){
+  const wrap = document.getElementById('filterChips');
+  wrap.innerHTML='';
+  const allChip = document.createElement('div');
+  allChip.className='chip'+(activeFilter==='all'?' active':'');
+  allChip.textContent='All Categories';
+  allChip.dataset.cat='all';
+  wrap.appendChild(allChip);
+  Object.keys(CATS).forEach(key=>{
+    const chip = document.createElement('div');
+    chip.className='chip'+(activeFilter===key?' active':'');
+    chip.textContent=CATS[key].label;
+    chip.dataset.cat=key;
+    wrap.appendChild(chip);
+  });
+}
+
+function renderDetail(){
+  const t = getTrainee(currentTraineeId);
+  if(!t) return;
+  document.getElementById('dName').textContent = t.name;
+  document.getElementById('dMeta').textContent =
+    (t.store?('Store: '+t.store+'  ·  '):'') +
+    (t.trainer?('Trainer: '+t.trainer+'  ·  '):'') +
+    (t.manager?('Sales Manager: '+t.manager+'  ·  '):'') +
+    'Start Date: '+(t.startDate||'—');
+  document.getElementById('dTrack').value = trackOf(t);
+
+  const day = dayOfProgram(t.startDate);
+  const prog = progressFor(t);
+  const phase = currentPhaseFor(t);
+  document.getElementById('statDay').textContent = day>0 ? day : '—';
+  document.getElementById('statPct').textContent = prog.pct+'%';
+  document.getElementById('statDone').textContent = prog.done+'/'+prog.total;
+  document.getElementById('statPhase').textContent = phase ? phase.name.split('·')[0].replace('Phase ','P') : '—';
+
+  const fr = floorReadyState(t);
+  const banner = document.getElementById('floorReadyBanner');
+  banner.className = 'floor-ready-banner '+fr.status;
+  banner.textContent = fr.text;
+
+  renderCertCard(t);
+  renderFilters();
+  renderPhases(t);
+}
+
+function renderCertCard(t){
+  const wrap = document.getElementById('certBrandList');
+  if(!wrap) return;
+  wrap.innerHTML = ALL_BRANDS.map(b=>{
+    const rec = (t.certs||{})[b];
+    const total = getQuestionsForBrand(b).length;
+    let badge, meta;
+    if(!rec){
+      badge = '<span class="badge pending">Not Attempted</span>';
+      meta = total+' questions available';
+    } else if(rec.passed){
+      badge = '<span class="badge good">Certified — '+rec.bestPct+'%</span>';
+      meta = 'Best score '+rec.bestPct+'% · last attempt '+rec.lastDate+' ('+rec.attempts.length+' attempt'+(rec.attempts.length===1?'':'s')+')';
+    } else {
+      badge = '<span class="badge warn">Not Certified — best '+rec.bestPct+'%</span>';
+      meta = 'Needs '+CERT_PASS_PCT+'%+ · last attempt '+rec.lastDate+' ('+rec.attempts.length+' attempt'+(rec.attempts.length===1?'':'s')+')';
+    }
+    return `
+      <div class="cert-brand-row">
+        <div>
+          <div class="cert-brand-name">${escapeHtml(b)}</div>
+          <div class="cert-brand-meta">${escapeHtml(meta)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          ${badge}
+          <button class="btn amber small" data-start-quiz="${escapeAttr(b)}">${rec?'Retake Quiz':'Start Quiz'}</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderPhases(t){
+  const wrap = document.getElementById('phaseList');
+  wrap.innerHTML='';
+  const track = trackOf(t);
+  CURRICULUM.forEach(phase=>{
+    const trackItems = itemsForTrack(phase.items, track);
+    const items = activeFilter==='all' ? trackItems : trackItems.filter(i=>i.cat===activeFilter);
+    if(items.length===0) return;
+    const pp = phaseProgress(t, phase);
+    const section = document.createElement('div');
+    section.className='phase card';
+
+    const head = document.createElement('div');
+    head.className='phase-head';
+    head.innerHTML = `
+      <div>
+        <h3>${escapeHtml(phase.name)} ${phase.gate?'<span class="badge pending" style="margin-left:6px;">Gate</span>':''}</h3>
+        <div class="days">${phaseDayLabel(phase, track)}</div>
+        <div class="phase-goal">${escapeHtml(phase.goal)}</div>
+      </div>
+      <div class="phase-progress">
+        <div class="progress-outer"><div class="progress-inner" style="width:${pp.pct}%"></div></div>
+        <span>${pp.done}/${pp.total}</span>
+      </div>
+    `;
+    const itemsWrap = document.createElement('div');
+    itemsWrap.className='items';
+    items.forEach(it=>{
+      itemsWrap.appendChild(renderItem(t, it));
+    });
+    section.appendChild(head);
+    section.appendChild(itemsWrap);
+    wrap.appendChild(section);
+  });
+}
+
+function renderItem(t, it){
+  const rec = t.progress[it.id] || {done:false, date:'', signedOff:'', note:''};
+  const row = document.createElement('div');
+  row.className='item'+(rec.done?' done':'');
+  const cat = CATS[it.cat];
+  row.innerHTML = `
+    <input type="checkbox" data-item="${it.id}" ${rec.done?'checked':''}>
+    <div class="item-body">
+      <div class="item-tag" style="color:${cat.color};background:${cat.color}1a;">${cat.label}</div>
+      ${GM_SIGNOFF_ITEMS.has(it.id) ? '<span class="badge warn" style="margin-left:6px;">GM Sign-Off Required</span>' : ''}
+      <div class="item-title">${escapeHtml(it.title)}</div>
+      ${it.detail?`<div class="item-detail">${escapeHtml(it.detail)}</div>`:''}
+      <div class="item-signoff">
+        <select data-signoff="${it.id}">
+          <option value="" ${!rec.signedOff?'selected':''}>Signed off by…</option>
+          <option value="Trainee (self)" ${rec.signedOff==='Trainee (self)'?'selected':''}>Trainee (self)</option>
+          <option value="Trainer/Mentor" ${rec.signedOff==='Trainer/Mentor'?'selected':''}>Trainer/Mentor</option>
+          <option value="Sales Manager" ${rec.signedOff==='Sales Manager'?'selected':''}>Sales Manager</option>
+          <option value="General Manager (GM)" ${rec.signedOff==='General Manager (GM)'?'selected':''}>General Manager (GM)</option>
+        </select>
+        <input type="date" data-date="${it.id}" value="${rec.date||''}">
+        <input type="text" data-note="${it.id}" placeholder="Notes…" value="${escapeAttr(rec.note||'')}">
+      </div>
+    </div>
+  `;
+  return row;
+}
+
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeAttr(s){ return escapeHtml(s); }
+
+/* ---------------- RENDER: PRODUCT REFERENCE ---------------- */
+let activeBrandFilter = 'all';
+const ALL_BRANDS = [...new Set(PRODUCT_LINES.map(m=>m.brand))];
+
+function renderBrandChips(){
+  const wrap = document.getElementById('brandChips');
+  const allChip = `<div class="chip${activeBrandFilter==='all'?' active':''}" data-brand="all">All Brands</div>`;
+  const brandChips = ALL_BRANDS.map(b=>`<div class="chip${activeBrandFilter===b?' active':''}" data-brand="${escapeAttr(b)}">${escapeHtml(b)}</div>`).join('');
+  wrap.innerHTML = allChip + brandChips;
+}
+
+function renderProductView(){
+  renderBrandChips();
+
+  const lines = activeBrandFilter==='all' ? PRODUCT_LINES : PRODUCT_LINES.filter(m=>m.brand===activeBrandFilter);
+
+  const compareBody = document.getElementById('compareBody');
+  compareBody.innerHTML = lines.map(m=>`
+    <tr>
+      <td><strong>${escapeHtml(m.name)}</strong></td>
+      <td>${escapeHtml(m.brand)}</td>
+      <td>${escapeHtml(m.type)}</td>
+      <td>${escapeHtml(m.price)}</td>
+      <td>${escapeHtml(m.weight)}</td>
+      <td>${escapeHtml(m.length)}</td>
+      <td>${escapeHtml(m.sleeps)}</td>
+    </tr>
+  `).join('');
+
+  const brandCards = document.getElementById('brandFeatureCards');
+  const brandsToShow = activeBrandFilter==='all' ? ALL_BRANDS : [activeBrandFilter];
+  brandCards.innerHTML = brandsToShow.map(b=>`
+    <div class="card" id="brandFeatures-${escapeAttr(b).replace(/[^a-zA-Z0-9]/g,'')}">
+      <h2 style="margin-top:0;">${escapeHtml(b)} Brand Features (apply across the lineup)</h2>
+      <div class="meta-line" style="margin-bottom:10px;">Learn these first — they're your answer any time a customer asks "why ${escapeHtml(b)}?" regardless of which model they're looking at.</div>
+      ${(BRAND_FEATURES[b]||[]).map(f=>`
+        <div class="feat-row">
+          <div class="feat-name">${escapeHtml(f.feature)}</div>
+          <div class="feat-benefit">${escapeHtml(f.benefit)}</div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+
+  const cards = document.getElementById('modelCards');
+  cards.innerHTML = lines.map(m=>`
+    <div class="card model-card">
+      <div class="model-card-head">
+        <div>
+          <h3>${escapeHtml(m.name)}</h3>
+          <div class="meta-line">${escapeHtml(m.brand)} · ${escapeHtml(m.type)}</div>
+        </div>
+        <span class="model-tier">${escapeHtml(m.tier)}</span>
+      </div>
+      <div class="model-facts">
+        <div><b>${escapeHtml(m.price)}</b>${m.price.startsWith('$')?' starting':''}</div>
+        <div><b>${escapeHtml(m.weight)}</b></div>
+        <div><b>${escapeHtml(m.length)}</b></div>
+        <div><b>${escapeHtml(m.sleeps)}</b></div>
+      </div>
+      <div class="best-for">Best for: ${escapeHtml(m.bestFor)}</div>
+      ${m.features.map(f=>`
+        <div class="feat-row">
+          <div class="feat-name">${escapeHtml(f.feature)}</div>
+          <div class="feat-benefit">${escapeHtml(f.benefit)}</div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+
+  const quizItems = activeBrandFilter==='all' ? QUIZ_BANK : QUIZ_BANK.filter(item=>{
+    const brandOfTag = PRODUCT_LINES.find(m=>m.name===item.tag)?.brand;
+    return item.tag.includes(activeBrandFilter) || brandOfTag===activeBrandFilter;
+  });
+  const quizList = document.getElementById('quizList');
+  quizList.innerHTML = quizItems.map((item,idx)=>`
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-tag">${escapeHtml(item.tag)}</span><span>${idx+1}. ${escapeHtml(item.q)}</span></div>
+      <button class="quiz-a-toggle" data-quiz-idx="${idx}">Show answer</button>
+      <div class="quiz-a" id="quizAns${idx}">${escapeHtml(item.a)}</div>
+    </div>
+  `).join('');
+}
+
+document.addEventListener('click', (e)=>{
+  if(e.target.dataset.quizIdx!==undefined){
+    const idx = e.target.dataset.quizIdx;
+    const ans = document.getElementById('quizAns'+idx);
+    const showing = ans.classList.toggle('show');
+    e.target.textContent = showing ? 'Hide answer' : 'Show answer';
+  }
+});
+document.getElementById('quizToggleBtn').addEventListener('click', (e)=>{
+  const anySwapped = e.target.dataset.state==='shown';
+  document.querySelectorAll('.quiz-a').forEach(el=>el.classList.toggle('show', !anySwapped));
+  document.querySelectorAll('.quiz-a-toggle').forEach(btn=>btn.textContent = !anySwapped ? 'Hide answer' : 'Show answer');
+  e.target.dataset.state = anySwapped ? 'hidden' : 'shown';
+  e.target.textContent = anySwapped ? 'Show All Answers' : 'Hide All Answers';
+});
+
+/* ---------------- EVENTS ---------------- */
+document.getElementById('navRoster').addEventListener('click', ()=>switchView('roster'));
+document.getElementById('navDetail').addEventListener('click', ()=>switchView('detail'));
+document.getElementById('navProduct').addEventListener('click', ()=>switchView('product'));
+document.getElementById('backBtn').addEventListener('click', ()=>switchView('roster'));
+document.getElementById('printBtn').addEventListener('click', ()=>window.print());
+document.getElementById('dTrack').addEventListener('change', (e)=>{
+  const t = getTrainee(currentTraineeId);
+  if(!t) return;
+  t.track = e.target.value==='experienced' ? 'experienced' : 'new';
+  saveState();
+  renderDetail();
+});
+
+function switchView(view){
+  const rosterView=document.getElementById('rosterView');
+  const detailView=document.getElementById('detailView');
+  const productView=document.getElementById('productView');
+  const navRoster=document.getElementById('navRoster');
+  const navDetail=document.getElementById('navDetail');
+  const navProduct=document.getElementById('navProduct');
+
+  rosterView.classList.add('hidden');
+  detailView.classList.add('hidden');
+  productView.classList.add('hidden');
+  navRoster.classList.remove('active');
+  navProduct.classList.remove('active');
+  navDetail.classList.remove('active');
+
+  if(view==='roster'){
+    rosterView.classList.remove('hidden');
+    navRoster.classList.add('active');
+    navDetail.classList.add('hidden');
+    renderRoster();
+  } else if(view==='product'){
+    productView.classList.remove('hidden');
+    navProduct.classList.add('active');
+    renderProductView();
+  } else {
+    detailView.classList.remove('hidden');
+    navDetail.classList.remove('hidden'); navDetail.classList.add('active');
+    renderDetail();
+  }
+}
+
+document.getElementById('rosterBody').addEventListener('click', (e)=>{
+  const openId = e.target.dataset.open;
+  const rowId = e.target.closest('tr')?.dataset.id;
+  const id = openId || rowId;
+  if(id){ currentTraineeId=id; switchView('detail'); }
+});
+
+document.getElementById('filterChips').addEventListener('click',(e)=>{
+  if(e.target.dataset.cat){
+    activeFilter = e.target.dataset.cat;
+    renderDetail();
+  }
+});
+
+document.getElementById('productView').addEventListener('click',(e)=>{
+  if(e.target.dataset.brand){
+    activeBrandFilter = e.target.dataset.brand;
+    renderProductView();
+  }
+});
+
+document.getElementById('phaseList').addEventListener('change',(e)=>{
+  const t = getTrainee(currentTraineeId);
+  if(!t) return;
+  if(e.target.dataset.item){
+    const id=e.target.dataset.item;
+    if(!t.progress[id]) t.progress[id]={done:false,date:'',signedOff:'',note:''};
+    t.progress[id].done = e.target.checked;
+    if(e.target.checked && !t.progress[id].date){ t.progress[id].date = new Date().toISOString().slice(0,10); }
+    saveState();
+    renderDetail();
+  }
+  if(e.target.dataset.signoff){
+    const id=e.target.dataset.signoff;
+    if(!t.progress[id]) t.progress[id]={done:false,date:'',signedOff:'',note:''};
+    t.progress[id].signedOff = e.target.value;
+    saveState();
+  }
+  if(e.target.dataset.date){
+    const id=e.target.dataset.date;
+    if(!t.progress[id]) t.progress[id]={done:false,date:'',signedOff:'',note:''};
+    t.progress[id].date = e.target.value;
+    saveState();
+  }
+});
+document.getElementById('phaseList').addEventListener('input',(e)=>{
+  const t = getTrainee(currentTraineeId);
+  if(!t) return;
+  if(e.target.dataset.note){
+    const id=e.target.dataset.note;
+    if(!t.progress[id]) t.progress[id]={done:false,date:'',signedOff:'',note:''};
+    t.progress[id].note = e.target.value;
+    saveState();
+  }
+});
+
+/* Delete trainee */
+document.getElementById('deleteTraineeBtn').addEventListener('click', ()=>{
+  const t = getTrainee(currentTraineeId);
+  if(!t) return;
+  if(confirm('Delete '+t.name+'’s progress? This cannot be undone.')){
+    state.trainees = state.trainees.filter(x=>x.id!==currentTraineeId);
+    saveState();
+    switchView('roster');
+  }
+});
+
+/* Add trainee modal */
+const addModal = document.getElementById('addModal');
+document.getElementById('addTraineeBtn').addEventListener('click', ()=>{
+  document.getElementById('fName').value='';
+  document.getElementById('fTrack').value='new';
+  document.getElementById('fStart').value=new Date().toISOString().slice(0,10);
+  document.getElementById('fStore').value='';
+  document.getElementById('fTrainer').value='';
+  document.getElementById('fManager').value='';
+  addModal.classList.remove('hidden');
+});
+document.getElementById('cancelAdd').addEventListener('click', ()=>addModal.classList.add('hidden'));
+document.getElementById('saveAdd').addEventListener('click', ()=>{
+  const name = document.getElementById('fName').value.trim();
+  if(!name){ alert('Please enter a name.'); return; }
+  const t = {
+    id: uid(),
+    name,
+    track: document.getElementById('fTrack').value==='experienced' ? 'experienced' : 'new',
+    startDate: document.getElementById('fStart').value,
+    store: document.getElementById('fStore').value.trim(),
+    trainer: document.getElementById('fTrainer').value.trim(),
+    manager: document.getElementById('fManager').value.trim(),
+    progress: {}
+  };
+  state.trainees.push(t);
+  saveState();
+  addModal.classList.add('hidden');
+  currentTraineeId = t.id;
+  switchView('detail');
+});
+
+/* Export / Import */
+document.getElementById('exportBtn').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'campers-inn-90day-roadmap-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+document.getElementById('importBtn').addEventListener('click', ()=>{
+  document.getElementById('importFile').click();
+});
+document.getElementById('importFile').addEventListener('change',(e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (evt)=>{
+    try{
+      const incoming = JSON.parse(evt.target.result);
+      if(!incoming.trainees) throw new Error('bad format');
+      if(state.trainees.length>0){
+        const mode = confirm('Merge imported trainees with the current roster?\n\nOK = Merge (add/update by name)\nCancel = Replace entire roster');
+        if(mode){
+          incoming.trainees.forEach(nt=>{
+            const existingIdx = state.trainees.findIndex(t=>t.name.toLowerCase()===nt.name.toLowerCase());
+            if(existingIdx>-1){ state.trainees[existingIdx]=nt; } else { state.trainees.push(nt); }
+          });
+        } else {
+          state = incoming;
+        }
+      } else {
+        state = incoming;
+      }
+      saveState();
+      renderRoster();
+      alert('Import complete.');
+    }catch(err){
+      alert('Could not read that file. Make sure it’s a roadmap export (.json).');
+    }
+    e.target.value='';
+  };
+  reader.readAsText(file);
+});
+
+/* ---------------- CERTIFICATION QUIZ ---------------- */
+let quizSession = null; // {brand, traineeId, questions, idx, correctCount, revealed}
+
+function startQuiz(brand){
+  const questions = shuffleArray(getQuestionsForBrand(brand).slice());
+  if(questions.length===0){ alert('No questions available for '+brand+' yet.'); return; }
+  quizSession = {brand, traineeId: currentTraineeId, questions, idx:0, correctCount:0, revealed:false};
+  document.getElementById('quizModal').classList.remove('hidden');
+  renderQuizModal();
+}
+
+function closeQuizModal(){
+  document.getElementById('quizModal').classList.add('hidden');
+  quizSession = null;
+}
+
+function renderQuizModal(){
+  const body = document.getElementById('quizModalBody');
+  if(!quizSession){ body.innerHTML=''; return; }
+  const {questions, idx} = quizSession;
+  if(idx >= questions.length){ renderQuizResults(); return; }
+  const q = questions[idx];
+  body.innerHTML = `
+    <h3 style="margin-top:0;">${escapeHtml(quizSession.brand)} Certification Quiz</h3>
+    <div class="quiz-progress-text">Question ${idx+1} of ${questions.length} &nbsp;·&nbsp; ${quizSession.correctCount} correct so far</div>
+    <div class="progress-outer" style="margin-bottom:14px;"><div class="progress-inner" style="width:${Math.round(idx/questions.length*100)}%"></div></div>
+    <span class="quiz-tag">${escapeHtml(q.tag)}</span>
+    <div class="quiz-modal-q">${escapeHtml(q.q)}</div>
+    ${quizSession.revealed ? `<div class="quiz-modal-answer">${escapeHtml(q.a)}</div>` : '<div class="meta-line">Think through your answer, then reveal it and grade yourself honestly.</div>'}
+    <div class="modal-actions" style="justify-content:space-between;">
+      <button class="btn ghost" id="quizCancelBtn">Cancel</button>
+      ${!quizSession.revealed
+        ? `<button class="btn amber" id="quizRevealBtn">Reveal Answer</button>`
+        : `<div style="display:flex;gap:8px;">
+             <button class="btn ghost" id="quizWrongBtn">✗ I missed it</button>
+             <button class="btn amber" id="quizRightBtn">✓ Got it right</button>
+           </div>`
+      }
+    </div>
+  `;
+}
+
+function renderQuizResults(){
+  const body = document.getElementById('quizModalBody');
+  const {questions, correctCount, brand} = quizSession;
+  const pct = Math.round(correctCount/questions.length*100);
+  const passed = pct >= CERT_PASS_PCT;
+  body.innerHTML = `
+    <h3 style="margin-top:0;">${escapeHtml(brand)} Certification Quiz — Results</h3>
+    <div class="quiz-result-score">${pct}%</div>
+    <div class="quiz-result-sub">${correctCount} of ${questions.length} correct — ${passed?('✅ Passed ('+CERT_PASS_PCT+'%+ required)'):('❌ Not certified yet ('+CERT_PASS_PCT+'%+ required)')}</div>
+    <div class="modal-actions" style="justify-content:space-between;">
+      <button class="btn ghost" id="quizCloseBtn">Close Without Saving</button>
+      <div style="display:flex;gap:8px;">
+        <button class="btn ghost" id="quizRetakeBtn">Retake</button>
+        <button class="btn amber" id="quizSaveBtn">Save Result</button>
+      </div>
+    </div>
+  `;
+}
+
+function saveQuizResult(){
+  const t = getTrainee(quizSession.traineeId);
+  if(!t){ closeQuizModal(); return; }
+  const {questions, correctCount, brand} = quizSession;
+  const pct = Math.round(correctCount/questions.length*100);
+  const passed = pct >= CERT_PASS_PCT;
+  const attempt = {date: new Date().toISOString().slice(0,10), total: questions.length, correct: correctCount, pct, passed};
+  if(!t.certs) t.certs = {};
+  if(!t.certs[brand]) t.certs[brand] = {attempts:[], bestPct:0, passed:false, lastDate:''};
+  t.certs[brand].attempts.push(attempt);
+  t.certs[brand].lastDate = attempt.date;
+  if(pct > (t.certs[brand].bestPct||0)) t.certs[brand].bestPct = pct;
+  if(passed) t.certs[brand].passed = true;
+  saveState();
+  closeQuizModal();
+  renderDetail();
+}
+
+document.getElementById('quizModal').addEventListener('click',(e)=>{
+  const id = e.target.id;
+  if(id==='quizRevealBtn'){ quizSession.revealed=true; renderQuizModal(); }
+  else if(id==='quizRightBtn'){ quizSession.correctCount++; quizSession.idx++; quizSession.revealed=false; renderQuizModal(); }
+  else if(id==='quizWrongBtn'){ quizSession.idx++; quizSession.revealed=false; renderQuizModal(); }
+  else if(id==='quizCancelBtn' || id==='quizCloseBtn'){ closeQuizModal(); }
+  else if(id==='quizRetakeBtn'){ startQuiz(quizSession.brand); }
+  else if(id==='quizSaveBtn'){ saveQuizResult(); }
+});
+
+document.getElementById('detailView').addEventListener('click',(e)=>{
+  if(e.target.dataset.startQuiz){ startQuiz(e.target.dataset.startQuiz); }
+});
+
+/* ---------------- INIT ---------------- */
+renderRoster();
+</script>
+</body>
+</html>
